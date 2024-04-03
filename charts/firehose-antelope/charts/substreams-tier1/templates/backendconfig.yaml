@@ -1,0 +1,16 @@
+{{- if .Values.backendconfig.enabled -}}
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: substreams-tier1-bec-https
+  labels:
+    {{- include "substreams-tier1.labels" . | nindent 4 }}
+spec:
+  healthCheck:
+    checkIntervalSec: 10
+    port: 9000
+    requestPath: /
+    timeoutSec: 3
+    type: {{ .Values.backendconfig.type }}
+  timeoutSec: 86400
+{{ end }}

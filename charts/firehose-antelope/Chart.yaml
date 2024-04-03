@@ -1,0 +1,26 @@
+apiVersion: v2
+appVersion: 0.1.0
+description: A Helm chart for firehose-antelope components
+name: firehose-antelope
+type: application
+version: 0.2.21
+
+dependencies:
+  - name: reader-node
+    version: 0.1.0
+    repository: file://charts/reader-node
+  - name: merger
+    version: 0.1.0
+    repository: file://charts/merger
+  - name: relayer
+    version: 0.1.0
+    repository: file://charts/relayer
+  - name: substreams-tier1
+    version: 0.1.0
+    repository: file://charts/substreams-tier1
+  - name: substreams-tier2
+    version: 0.1.0
+    repository: file://charts/substreams-tier2
+  - name: firehose
+    version: 0.1.0
+    repository: file://charts/firehose

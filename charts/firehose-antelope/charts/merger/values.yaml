@@ -1,0 +1,89 @@
+# Default values for blockchain-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ""
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+statefulset:
+  enabled: true
+  serviceAccountName: app-blocks-writer
+  blocksStoreURL: ""
+  oneBlockStoreURL: ""
+  forkedBlocksStoreURL: ""
+  maxFixableFork: 2000
+  timeBetweenStoreLookups: 5s
+  env:
+    - name: INFO
+      value: ".*"
+  ports:
+    - containerPort: 9000
+      name: grpc-endpoint
+      protocol: TCP
+    - containerPort: 9102
+      name: prometheus
+      protocol: TCP
+  storageLimit: 4Gi
+  storageSize: 1Gi
+
+### Note: First port in list will be used as an Ingress port!
+service:
+  labels:
+    monitoring: "true"
+    monitor: prometheus
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      name: grpc-endpoint
+      port: 9000
+      targetPort: 9000
+    - protocol: TCP
+      name: prometheus
+      port: 9102
+      targetPort: 9102
+
+livenessProbe:
+  # httpGet:
+  #   path: /explorer/payment/v1/health
+  #   port: http
+  # initialDelaySeconds: 60
+  # periodSeconds: 3
+
+readinessProbe:
+  # httpGet:
+  #   path: /explorer/payment/v1/ready
+  #   port: http
+  # initialDelaySeconds: 8
+  # periodSeconds: 3
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 1Gi
+
+pdb:
+  maxUnavailable: 70%
+
+nodeSelector:
+  role: batch-c2-4cores-16gb

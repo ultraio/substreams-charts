@@ -1,0 +1,82 @@
+# Default values for blockchain-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ""
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+statefulset:
+  enabled: true
+  serviceAccountName: app-data-reader
+  ports:
+    - name: grpc
+      containerPort: 9000
+      protocol: TCP
+    - name: prometheus
+      containerPort: 9102
+      protocol: TCP
+  env:
+    - name: INFO
+      value: github.com/dfuse-io/.*
+  mergedBlocksStoreURL: ""
+  oneBlockStoreURL: ""
+  forkedBlocksStoreURL: ""
+  stateBundleSize: 1000
+  stateStoreURL: "/firehose-data/localdata"
+  stateStoreDefaultTag: ""
+  discoveryServiceURL: ""
+
+### Note: First port in list will be used as an Ingress port!
+service:
+  labels:
+    monitoring: "true"
+    monitor: prometheus
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      name: grpc
+      port: 9000
+      targetPort: 9000
+    - protocol: TCP
+      name: prometheus
+      port: 9102
+      targetPort: 9102
+
+livenessProbe:
+  # httpGet:
+  #   path: /explorer/payment/v1/health
+  #   port: http
+  # initialDelaySeconds: 60
+  # periodSeconds: 3
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+  tcpSocket:
+    port: 9000
+
+resources:
+  limits:
+    cpu: 2
+    memory: 2Gi
+  requests:
+    cpu: 1
+    memory: 500Mi
+
+autoscaling:
+  enabled: false
+
+nodeSelector:
+  pool-id: batch-c2-4cores-16gb

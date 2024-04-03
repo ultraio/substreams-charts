@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "relayer.fullname" . }}
+  labels:
+    {{- with .Values.service.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- include "relayer.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  {{- with .Values.service.ports }}
+  ports:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  selector:
+    {{- include "relayer.selectorLabels" . | nindent 4 }}

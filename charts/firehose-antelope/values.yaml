@@ -1,0 +1,12 @@
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: ""
+    networking.gke.io/managed-certificates: ""
+  tls: []
+  hosts: []
+    # - host:
+    #   paths:
+    #     - path:
+    #       name:
+    #       number:
