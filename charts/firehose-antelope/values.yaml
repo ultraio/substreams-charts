@@ -10,3 +10,5 @@ ingress:
     #     - path:
     #       name:
     #       number:
+servicemonitor:
+  enabled: false
