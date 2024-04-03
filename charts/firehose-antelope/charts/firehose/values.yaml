@@ -38,7 +38,7 @@ service:
   labels:
     monitoring: "true"
     monitor: prometheus
-  type: NodePort
+  type: ClusterIP
   ports:
     - protocol: TCP
       name: grpc
@@ -48,11 +48,6 @@ service:
       name: prometheus
       port: 9102
       targetPort: 9102
-  annotations:
-    beta.cloud.google.com/backend-config: '{"default": "firehose-bec-https"}'
-    cloud.google.com/app-protocols: '{"grpc":"HTTP2"}'
-    cloud.google.com/neg: '{"ingress":true}'
-    datree.skip/SERVICE_INCORRECT_TYPE_VALUE_NODEPORT: require to be exposed
 
 livenessProbe:
   # httpGet:

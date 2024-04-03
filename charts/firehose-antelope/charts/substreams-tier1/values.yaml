@@ -14,10 +14,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-backendconfig:
-  enabled: false
-  type: HTTPS
-
 statefulset:
   enabled: true
   serviceAccountName: app-data-reader
