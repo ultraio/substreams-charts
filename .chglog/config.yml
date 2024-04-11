@@ -1,0 +1,18 @@
+style: gitlab
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+  repository_url: https://gitlab.com/ultraio/blockchain/substreams-charts
+options:
+  commits:
+  commit_groups:
+  header:
+    pattern: "^(\\[UI-\\d{4,}\\] )?(build|ci|chore|docs|feat|fix|perf|refactor|style|test|release)(\\(.*\\))?:\\s(.+)$"
+    pattern_maps:
+      - None
+      - Type
+      - Scope
+      - Subject
+  notes:
+    keywords:
+      - BREAKING CHANGE
