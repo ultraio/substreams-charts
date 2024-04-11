@@ -2,7 +2,7 @@ style: gitlab
 template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
-  repository_url: https://gitlab.com/ultraio/devops/dfuse
+  repository_url: https://gitlab.com/ultraio/blockchain/substreams-charts
 options:
   commits:
   commit_groups:
