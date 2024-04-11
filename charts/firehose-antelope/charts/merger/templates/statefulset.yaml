@@ -1,0 +1,80 @@
+{{- if .Values.statefulset.enabled -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "merger.fullname" . }}
+  labels:
+    {{- include "merger.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/search: "true"
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      {{- include "merger.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "merger.name" . }}
+  template: 
+    metadata:
+      labels:
+        {{- include "merger.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: "{{ .Values.statefulset.serviceAccountName }}"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/app/fireantelope"
+            - "start"
+            - "merger"
+            - "--config-file="
+            - "--log-format=stackdriver"
+            - "--log-to-file=false"
+            - "--common-merged-blocks-store-url={{ .Values.statefulset.blocksStoreURL }}"
+            - "--common-one-block-store-url={{ .Values.statefulset.oneBlockStoreURL }}"
+            - "--common-forked-blocks-store-url={{ .Values.statefulset.forkedBlocksStoreURL }}"
+            - "--merger-grpc-listen-addr=:9000"
+            - "--merger-prune-forked-blocks-after={{ .Values.statefulset.maxFixableFork }}"
+            - "--merger-stop-block=0"
+            - "--merger-time-between-store-lookups={{ .Values.statefulset.timeBetweenStoreLookups }}"
+          {{- with .Values.statefulset.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.statefulset.ports }}
+          ports:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: "/data"
+              name: datadir
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        annotations:
+          resize.topolvm.io/storage_limit: {{ .Values.statefulset.storageLimit }}
+        name: datadir
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.statefulset.storageSize }}
+        storageClassName: gcpssd-lazy
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+{{ end }}

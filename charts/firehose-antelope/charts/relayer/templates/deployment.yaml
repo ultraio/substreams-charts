@@ -1,0 +1,75 @@
+{{- if .Values.deployment.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "relayer.fullname" . }}
+  labels:
+    {{- include "relayer.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/search: "true"
+    datree.skip/DEPLOYMENT_INCORRECT_REPLICAS_VALUE: only require 1 relayer
+spec:
+  minReadySeconds: 60
+  progressDeadlineSeconds: 600
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      {{- include "relayer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "relayer.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: "{{ .Values.deployment.serviceAccountName }}"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/app/fireantelope"
+            - "start"
+            - "relayer"
+            - "--config-file="
+            - "--log-format=stackdriver"
+            - "--log-to-file=false"
+            - "--common-one-block-store-url={{ .Values.deployment.oneBlockStoreURL }}"
+            - "--relayer-max-source-latency=10m"
+            - "--relayer-grpc-listen-addr=:9000"
+            - "--relayer-source={{ .Values.deployment.readerDNS1 }}"
+            - "--relayer-source={{ .Values.deployment.readerDNS2 }}"
+          {{- with .Values.deployment.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.deployment.ports }}
+          ports:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - {{ .Chart.Name }}
+                topologyKey: kubernetes.io/hostname
+{{ end }}

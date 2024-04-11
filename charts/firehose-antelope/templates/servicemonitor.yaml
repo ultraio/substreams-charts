@@ -1,0 +1,14 @@
+{{- if .Values.servicemonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus
+  labels:
+    {{- include "firehose-antelope.labels" . | nindent 4 }}
+spec:
+  endpoints:
+    - port: prometheus
+  selector:
+    matchLabels:
+      monitor: prometheus
+{{ end }}

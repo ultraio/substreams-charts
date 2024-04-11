@@ -1,0 +1,62 @@
+{{- if .Values.statefulset.enabled -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "substreams-tier2.fullname" . }}
+  labels:
+    {{- include "substreams-tier2.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/search: "true"
+spec:
+  podManagementPolicy: Parallel
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      {{- include "substreams-tier2.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "substreams-tier2.name" . }}
+  template: 
+    metadata:
+      labels:
+        {{- include "substreams-tier2.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: "{{ .Values.statefulset.serviceAccountName }}"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/app/fireantelope"
+            - "start"
+            - "substreams-tier2"
+            - "--config-file="
+            - "--log-format=stackdriver"
+            - "--log-to-file=false"
+            - "--common-system-shutdown-signal-delay=30s"
+            - "--common-merged-blocks-store-url={{ .Values.statefulset.mergedBlocksStoreURL }}"
+            - "--common-one-block-store-url={{ .Values.statefulset.oneBlockStoreURL }}"
+            - "--common-forked-blocks-store-url={{ .Values.statefulset.forkedBlocksStoreURL }}"
+            - "--substreams-state-bundle-size={{ .Values.statefulset.stateBundleSize }}"
+            - "--substreams-state-store-url={{ .Values.statefulset.stateStoreURL }}"
+            - "--substreams-state-store-default-tag={{ .Values.statefulset.stateStoreDefaultTag }}"
+            - "--substreams-tier2-grpc-listen-addr=:9000"
+            - "--substreams-tier2-discovery-service-url={{ .Values.statefulset.discoveryServiceURL }}"
+          {{- with .Values.statefulset.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.statefulset.ports }}
+          ports:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+{{ end }}
