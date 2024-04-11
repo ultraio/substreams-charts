@@ -2,5 +2,5 @@ include:
   - project: ultraio/devops/helm-charts
     file: .gitlab/ci-templates/chart.yaml
     inputs:
-      chart: operator-v1
+      chart: firehose-antelope
       location: "" # Workaround because '.' is not evaluated correctly with rules:changes 
