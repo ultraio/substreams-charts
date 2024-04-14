@@ -23,7 +23,7 @@ spec:
       serviceAccountName: "{{ .Values.statefulset.serviceAccountName }}"
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/app/fireantelope"
@@ -32,13 +32,16 @@ spec:
             - "--config-file="
             - "--log-format=stackdriver"
             - "--log-to-file=false"
-            - "--common-merged-blocks-store-url={{ .Values.statefulset.blocksStoreURL }}"
-            - "--common-one-block-store-url={{ .Values.statefulset.oneBlockStoreURL }}"
-            - "--common-forked-blocks-store-url={{ .Values.statefulset.forkedBlocksStoreURL }}"
-            - "--merger-grpc-listen-addr=:9000"
-            - "--merger-prune-forked-blocks-after={{ .Values.statefulset.maxFixableFork }}"
-            - "--merger-stop-block=0"
-            - "--merger-time-between-store-lookups={{ .Values.statefulset.timeBetweenStoreLookups }}"
+            - "--common-merged-blocks-store-url={{ .Values.statefulset.commonMergedBlocksStoreUrl }}"
+            - "--common-one-block-store-url={{ .Values.statefulset.commonOneBlockStoreUrl }}"
+            - "--common-forked-blocks-store-url={{ .Values.statefulset.commonForkedBlocksStoreUrl }}"
+            - "--merger-grpc-listen-addr={{ .Values.statefulset.mergerGrpcListenAddr }}"
+            - "--merger-prune-forked-blocks-after={{ .Values.statefulset.mergerPruneForkedBlocksAfter }}"
+            - "--merger-stop-block={{ .Values.statefulset.mergerStopBlock }}"
+            - "--merger-time-between-store-lookups={{ .Values.statefulset.mergerTimeBetweenStoreLookups }}"
+            {{- with .Values.statefulset.extraCommands }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
           {{- with .Values.statefulset.env }}
           env:
             {{- toYaml . | nindent 12 }}

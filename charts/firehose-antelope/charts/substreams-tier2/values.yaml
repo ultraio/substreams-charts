@@ -5,18 +5,30 @@
 replicaCount: 1
 
 image:
-  repository: ""
+  repository: "quay.io/ultra.io/firehose-antelope"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: substreams-tier2
 
 statefulset:
   enabled: true
-  serviceAccountName: app-data-reader
+  serviceAccountName: ""
+  # commands
+  commonSystemShutdownSignalDelay: 30s
+  commonMergedBlocksStoreUrl: ""
+  commonOneBlockStoreUrl: ""
+  commonForkedBlocksStoreUrl: ""
+  substreamsStateBundleSize: 1000
+  substreamsStateStoreUrl: "/firehose-data/localdata"
+  substreamsStateStoreDefaultTag: ""
+  substreamsTier2GrpcListenAddr: :9000
+  substreamsTier2DiscoveryDerviceUrl: ""
+  extraCommands: []
+  # ports
   ports:
     - name: grpc
       containerPort: 9000
@@ -24,22 +36,15 @@ statefulset:
     - name: prometheus
       containerPort: 9102
       protocol: TCP
+  # env
   env:
     - name: INFO
       value: github.com/dfuse-io/.*
-  mergedBlocksStoreURL: ""
-  oneBlockStoreURL: ""
-  forkedBlocksStoreURL: ""
-  stateBundleSize: 1000
-  stateStoreURL: "/firehose-data/localdata"
-  stateStoreDefaultTag: ""
-  discoveryServiceURL: ""
 
 ### Note: First port in list will be used as an Ingress port!
 service:
   labels:
     monitoring: "true"
-    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP
@@ -79,4 +84,4 @@ autoscaling:
   enabled: false
 
 nodeSelector:
-  pool-id: batch-c2-4cores-16gb
+  role: application

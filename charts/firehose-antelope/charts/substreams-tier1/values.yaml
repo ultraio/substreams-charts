@@ -5,18 +5,36 @@
 replicaCount: 1
 
 image:
-  repository: ""
+  repository: "quay.io/ultra.io/firehose-antelope"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: substreams-tier1
 
 statefulset:
   enabled: true
-  serviceAccountName: app-data-reader
+  serviceAccountName: ""
+  # commands
+  commonAuthPlugin: null://
+  commonLiveBlocksAddr: dns:///relayer:9000
+  commonSystemShutdownSignalDelay: 30s
+  commonMergedBlocksStoreUrl: ""
+  commonOneBlockStoreUrl: ""
+  commonForkedBlocksStoreUrl: ""
+  substreamsStateBundleSize: 1000
+  substreamsStateStoreUrl: "/firehose-data/localdata"
+  substreamsStateStoreDefaultTag: ""
+  substreamsTier1GrpcListenAddr: :9000
+  substreamsTier1SubrequestsEndpoint: dns:///substreams-tier2:9000
+  substreamsTier1DiscoveryServiceUrl: ""
+  substreamsTier1SubrequestsInsecure: false
+  substreamsTier1SubrequestsPlaintext: true
+  substreamsTier1MaxSubrequests: 4
+  extraCommands: []
+  # ports
   ports:
     - name: grpc
       containerPort: 9000
@@ -27,25 +45,11 @@ statefulset:
   env:
     - name: INFO
       value: github.com/dfuse-io/.*
-  authPlugin: null://
-  liveBlocksAddr: dns:///relayer:9000
-  mergedBlocksStoreURL: ""
-  oneBlockStoreURL: ""
-  forkedBlocksStoreURL: ""
-  stateBundleSize: 1000
-  stateStoreURL: "/firehose-data/localdata"
-  stateStoreDefaultTag: ""
-  subrequestsEndpoint: dns:///substreams-tier2:9000
-  discoveryServiceURL: ""
-  subrequestsInsecure: false
-  subrequestsPlaintext: true
-  maxSubrequests: 4
 
 ### Note: First port in list will be used as an Ingress port!
 service:
   labels:
     monitoring: "true"
-    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP
@@ -56,11 +60,6 @@ service:
       name: prometheus
       port: 9102
       targetPort: 9102
-  # annotations:
-  #   beta.cloud.google.com/backend-config: '{"default": "substreams-tier1-bec-https"}'
-  #   cloud.google.com/app-protocols: '{"grpc":"HTTP2"}'
-  #   cloud.google.com/neg: '{"ingress":true}'
-  #   datree.skip/SERVICE_INCORRECT_TYPE_VALUE_NODEPORT: require to be exposed
 
 livenessProbe:
   # httpGet:
@@ -90,4 +89,4 @@ autoscaling:
   enabled: false
 
 nodeSelector:
-  pool-id: batch-c2-4cores-16gb
+  role: application

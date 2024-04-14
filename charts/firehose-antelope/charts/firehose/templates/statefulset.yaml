@@ -23,7 +23,7 @@ spec:
       serviceAccountName: "{{ .Values.statefulset.serviceAccountName }}"
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/app/fireantelope"
@@ -32,13 +32,16 @@ spec:
             - "--config-file="
             - "--log-format=stackdriver"
             - "--log-to-file=false"
-            - "--common-auth-plugin={{ .Values.statefulset.authPlugin }}"
-            - "--common-live-blocks-addr={{ .Values.statefulset.liveBlocksAddr }}"
-            - "--common-system-shutdown-signal-delay=30s"
-            - "--common-merged-blocks-store-url={{ .Values.statefulset.mergedBlocksStoreURL }}"
-            - "--common-one-block-store-url={{ .Values.statefulset.oneBlockStoreURL }}"
-            - "--common-forked-blocks-store-url={{ .Values.statefulset.forkedBlocksStoreURL }}"
-            - "--firehose-grpc-listen-addr=:9000*"
+            - "--common-auth-plugin={{ .Values.statefulset.commonAuthPlugin }}"
+            - "--common-live-blocks-addr={{ .Values.statefulset.commonLiveBlocksAddr }}"
+            - "--common-system-shutdown-signal-delay={{ .Values.statefulset.commonSystemShutdownSignalDelay }}"
+            - "--common-merged-blocks-store-url={{ .Values.statefulset.commonMergedBlocksStoreUrl }}"
+            - "--common-one-block-store-url={{ .Values.statefulset.commonOneBlockStoreUrl }}"
+            - "--common-forked-blocks-store-url={{ .Values.statefulset.commonForkedBlocksStoreUrl }}"
+            - "--firehose-grpc-listen-addr={{ .Values.statefulset.firehoseGrpcListenAddr }}"
+            {{- with .Values.statefulset.extraCommands }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
           {{- with .Values.statefulset.env }}
           env:
             {{- toYaml . | nindent 12 }}

@@ -5,31 +5,36 @@
 replicaCount: 2
 
 image:
-  repository: ""
+  repository: "quay.io/ultra.io/firehose-antelope"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+fullnameOverride: reader-node
 
 statefulset:
   enabled: true
   name: nodeos
-  serviceAccountName: app-blocks-writer
-  oneBlockStoreURL: ""
-  nodeosArguments: '--config-dir=/etc/nodeos --data-dir=/nodeos-data --genesis-json=/etc/nodeos/genesis.json'
-  autoMemLimitPercent: 90
+  serviceAccountName: ""
+  # commands
+  commonOneBlockStoreUrl: ""
+  commonSystemShutdownSignalDelay: 20s
+  readerNodeArguments: '--config-dir=/etc/nodeos --data-dir=/nodeos-data --genesis-json=/etc/nodeos/genesis.json'
+  readerNodeBlocksChanCapacity: 100
+  readerNodeDataDir: /nodeos-data
+  readerNodeDebugFirehoseLogs: false
+  readerNodeGrpcListenAddr: :9000
+  readerNodeManagerApiAddr: :8080
+  readerNodePath: nodeos
+  readerNodeReadinessMaxLatency: 5s
+  readerNodeStartBlockNum: 0
+  readerNodeStopBlockNum: 0
+  readerNodeWorkingDir: /nodeos-data/reader/work
+  commonAutoMemLimitPercent: 90
+  extraCommands: []
+  # Others
   env:
     - name: HOSTNAME
       valueFrom:
@@ -72,7 +77,6 @@ statefulset:
 service:
   labels:
     monitoring: "true"
-    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP
@@ -119,11 +123,43 @@ pdb:
   minAvailable: 1
 
 nodeSelector:
-  pool-id: batch-c2-4cores-16gb
+  role: application
 
 configmap:
   config:
-    config.ini: {}
+    config.ini: |
+      http-server-address = 0.0.0.0:8888
+      p2p-server-address = 0.0.0.0:9876
+      p2p-max-nodes-per-host = 2
+      connection-cleanup-period = 60
+      verbose-http-errors = true
+      chain-state-db-size-mb = 64000
+      http-validate-host = false
+      max-transaction-time = 5000
+      abi-serializer-max-time-ms = 500000
+
+      plugin = eosio::net_api_plugin
+      plugin = eosio::chain_api_plugin
+      plugin = eosio::db_size_api_plugin
+      plugin = eosio::producer_api_plugin
+
+      # Max speed for replay
+      validation-mode = light
+
+      # Enable deep mind
+      deep-mind = true
+      agent-name = reader-node
+      p2p-peer-address = 127.0.0.1:9876
+
+      wasm-runtime = eos-vm-jit
+      eos-vm-oc-enable = true
+      eos-vm-oc-compile-threads = 4
+      contracts-console = true
+      read-mode = head
+      p2p-accept-transactions = false
+      api-accept-transactions = false
+
+      http-threads = 2
     genesis.json: |
       {
         "initial_configuration": {

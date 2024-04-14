@@ -23,7 +23,7 @@ spec:
       serviceAccountName: "{{ .Values.statefulset.serviceAccountName }}"
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/app/fireantelope"
@@ -32,21 +32,24 @@ spec:
             - "--config-file="
             - "--log-format=stackdriver"
             - "--log-to-file=false"
-            - "--common-auth-plugin={{ .Values.statefulset.authPlugin }}"
-            - "--common-live-blocks-addr={{ .Values.statefulset.liveBlocksAddr }}"
-            - "--common-system-shutdown-signal-delay=30s"
-            - "--common-merged-blocks-store-url={{ .Values.statefulset.mergedBlocksStoreURL }}"
-            - "--common-one-block-store-url={{ .Values.statefulset.oneBlockStoreURL }}"
-            - "--common-forked-blocks-store-url={{ .Values.statefulset.forkedBlocksStoreURL }}"
-            - "--substreams-state-bundle-size={{ .Values.statefulset.stateBundleSize }}"
-            - "--substreams-state-store-url={{ .Values.statefulset.stateStoreURL }}"
-            - "--substreams-state-store-default-tag={{ .Values.statefulset.stateStoreDefaultTag }}"
-            - "--substreams-tier1-grpc-listen-addr=:9000"
-            - "--substreams-tier1-subrequests-endpoint={{ .Values.statefulset.subrequestsEndpoint }}"
-            - "--substreams-tier1-discovery-service-url={{ .Values.statefulset.discoveryServiceURL }}"
-            - "--substreams-tier1-subrequests-insecure={{ .Values.statefulset.subrequestsInsecure }}"
-            - "--substreams-tier1-subrequests-plaintext={{ .Values.statefulset.subrequestsPlaintext }}"
-            - "--substreams-tier1-max-subrequests={{ .Values.statefulset.maxSubrequests }}"
+            - "--common-auth-plugin={{ .Values.statefulset.commonAuthPlugin }}"
+            - "--common-live-blocks-addr={{ .Values.statefulset.commonLiveBlocksAddr }}"
+            - "--common-system-shutdown-signal-delay={{ .Values.statefulset.commonSystemShutdownSignalDelay }}"
+            - "--common-merged-blocks-store-url={{ .Values.statefulset.commonMergedBlocksStoreUrl }}"
+            - "--common-one-block-store-url={{ .Values.statefulset.commonOneBlockStoreUrl }}"
+            - "--common-forked-blocks-store-url={{ .Values.statefulset.commonForkedBlocksStoreUrl }}"
+            - "--substreams-state-bundle-size={{ .Values.statefulset.substreamsStateBundleSize }}"
+            - "--substreams-state-store-url={{ .Values.statefulset.substreamsStateStoreUrl }}"
+            - "--substreams-state-store-default-tag={{ .Values.statefulset.substreamsStateStoreDefaultTag }}"
+            - "--substreams-tier1-grpc-listen-addr={{ .Values.statefulset.substreamsTier1GrpcListenAddr }}"
+            - "--substreams-tier1-subrequests-endpoint={{ .Values.statefulset.substreamsTier1SubrequestsEndpoint }}"
+            - "--substreams-tier1-discovery-service-url={{ .Values.statefulset.substreamsTier1DiscoveryServiceUrl }}"
+            - "--substreams-tier1-subrequests-insecure={{ .Values.statefulset.substreamsTier1SubrequestsInsecure }}"
+            - "--substreams-tier1-subrequests-plaintext={{ .Values.statefulset.substreamsTier1SubrequestsPlaintext }}"
+            - "--substreams-tier1-max-subrequests={{ .Values.statefulset.substreamsTier1MaxSubrequests }}"
+            {{- with .Values.statefulset.extraCommands }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
           {{- with .Values.statefulset.env }}
           env:
             {{- toYaml . | nindent 12 }}

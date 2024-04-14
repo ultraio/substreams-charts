@@ -1,14 +1,10 @@
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.global-static-ip-name: ""
-    networking.gke.io/managed-certificates: ""
-  tls: []
-  hosts: []
-    # - host:
-    #   paths:
-    #     - path:
-    #       name:
-    #       number:
-servicemonitor:
+serviceMonitor:
   enabled: false
+  name: ""
+  spec: {}
+serviceAccount:
+  enabled: false
+  writerName: ""
+  writerAnnotations: {}
+  readerName: ""
+  readerAnnotations: {}
