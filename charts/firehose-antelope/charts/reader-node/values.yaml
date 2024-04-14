@@ -88,18 +88,6 @@ service:
       port: 9000
       targetPort: 9000
 
-ingress:
-  enabled: true
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod-dns
-  hosts: []
-    # - host:
-    #   paths:
-    #     - path:
-  tls: []
-    # - hosts: []
-    #   secretName:
-
 readinessProbe:
   failureThreshold: 1
   httpGet:
