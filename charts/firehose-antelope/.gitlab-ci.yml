@@ -1,7 +1,7 @@
 include:
   - project: ultraio/devops/helm-charts
     file: .gitlab/ci-templates/chart.yaml
+    ref: master
     inputs:
       chart: firehose-antelope
-      ref: master
       location: "" # Workaround because '.' is not evaluated correctly with rules:changes 
