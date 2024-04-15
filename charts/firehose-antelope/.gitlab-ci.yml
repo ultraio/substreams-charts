@@ -3,4 +3,5 @@ include:
     file: .gitlab/ci-templates/chart.yaml
     inputs:
       chart: firehose-antelope
+      ref: master
       location: "" # Workaround because '.' is not evaluated correctly with rules:changes 
