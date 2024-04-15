@@ -1,12 +1,12 @@
-stages:
-  - lint
-  - test
-  - release
+always-run:
+  script: echo 'this should always run'
 
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "external_pull_request_event"
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+on-pull-requests:
+  script: echo 'this should run on pull requests'
+  only:
+    - external_pull_requests
 
-include:
-  - charts/firehose-antelope/.gitlab-ci.yml
+except-pull-requests:
+  script: echo 'this should not run on pull requests'
+  except:
+    - external_pull_requests
