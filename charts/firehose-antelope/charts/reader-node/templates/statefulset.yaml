@@ -23,7 +23,7 @@ spec:
       serviceAccountName: "{{ .Values.statefulset.serviceAccountName }}"
       containers:
         - name: "{{ .Values.statefulset.name }}"
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/app/fireantelope"
@@ -32,20 +32,23 @@ spec:
             - "--config-file="
             - "--log-format=stackdriver"
             - "--log-to-file=false"
-            - "--common-one-block-store-url={{ .Values.statefulset.oneBlockStoreURL }}"
-            - "--common-system-shutdown-signal-delay=20s"
-            - "--reader-node-arguments={{ .Values.statefulset.nodeosArguments }}"
-            - "--reader-node-blocks-chan-capacity=100"
-            - "--reader-node-data-dir=/nodeos-data"
-            - "--reader-node-debug-firehose-logs=false"
-            - "--reader-node-grpc-listen-addr=:9000"
-            - "--reader-node-manager-api-addr=:8080"
-            - "--reader-node-path=nodeos"
-            - "--reader-node-readiness-max-latency=5s"
-            - "--reader-node-start-block-num=0"
-            - "--reader-node-stop-block-num=0"
-            - "--reader-node-working-dir=/nodeos-data/reader/work"
-            - "--common-auto-mem-limit-percent={{ .Values.statefulset.autoMemLimitPercent }}"
+            - "--common-one-block-store-url={{ .Values.statefulset.commonOneBlockStoreURL }}"
+            - "--common-system-shutdown-signal-delay={{ .Values.statefulset.commonSystemShutdownSignalDelay }}"
+            - "--reader-node-arguments={{ .Values.statefulset.readerNodeArguments }}"
+            - "--reader-node-blocks-chan-capacity={{ .Values.statefulset.readerNodeBlocksChanCapacity }}"
+            - "--reader-node-data-dir={{ .Values.statefulset.readerNodeDataDir }}"
+            - "--reader-node-debug-firehose-logs={{ .Values.statefulset.readerNodeDebugFirehoseLogs }}"
+            - "--reader-node-grpc-listen-addr={{ .Values.statefulset.readerNodeGrpcListenAddr }}"
+            - "--reader-node-manager-api-addr={{ .Values.statefulset.readerNodeManagerApiAddr }}"
+            - "--reader-node-path={{ .Values.statefulset.readerNodePath }}"
+            - "--reader-node-readiness-max-latency={{ .Values.statefulset.readerNodeReadinessMaxLatency }}"
+            - "--reader-node-start-block-num={{ .Values.statefulset.readerNodeStartBlockNum }}"
+            - "--reader-node-stop-block-num={{ .Values.statefulset.readerNodeStopBlockNum }}"
+            - "--reader-node-working-dir={{ .Values.statefulset.readerNodeWorkingDir }}"
+            - "--common-auto-mem-limit-percent={{ .Values.statefulset.commonAutoMemLimitPercent }}"
+            {{- with .Values.statefulset.extraCommands }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
           {{- with .Values.statefulset.env }}
           env:
             {{- toYaml . | nindent 12 }}

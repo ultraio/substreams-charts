@@ -23,7 +23,7 @@ spec:
       serviceAccountName: "{{ .Values.statefulset.serviceAccountName }}"
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/app/fireantelope"
@@ -32,15 +32,18 @@ spec:
             - "--config-file="
             - "--log-format=stackdriver"
             - "--log-to-file=false"
-            - "--common-system-shutdown-signal-delay=30s"
-            - "--common-merged-blocks-store-url={{ .Values.statefulset.mergedBlocksStoreURL }}"
-            - "--common-one-block-store-url={{ .Values.statefulset.oneBlockStoreURL }}"
-            - "--common-forked-blocks-store-url={{ .Values.statefulset.forkedBlocksStoreURL }}"
-            - "--substreams-state-bundle-size={{ .Values.statefulset.stateBundleSize }}"
-            - "--substreams-state-store-url={{ .Values.statefulset.stateStoreURL }}"
-            - "--substreams-state-store-default-tag={{ .Values.statefulset.stateStoreDefaultTag }}"
-            - "--substreams-tier2-grpc-listen-addr=:9000"
-            - "--substreams-tier2-discovery-service-url={{ .Values.statefulset.discoveryServiceURL }}"
+            - "--common-system-shutdown-signal-delay={{ .Values.statefulset.commonSystemShutdownSignalDelay }}"
+            - "--common-merged-blocks-store-url={{ .Values.statefulset.commonMergedBlocksStoreUrl }}"
+            - "--common-one-block-store-url={{ .Values.statefulset.commonOneBlockStoreUrl }}"
+            - "--common-forked-blocks-store-url={{ .Values.statefulset.commonForkedBlocksStoreUrl }}"
+            - "--substreams-state-bundle-size={{ .Values.statefulset.substreamsStateBundleSize }}"
+            - "--substreams-state-store-url={{ .Values.statefulset.substreamsStateStoreUrl }}"
+            - "--substreams-state-store-default-tag={{ .Values.statefulset.substreamsStateStoreDefaultTag }}"
+            - "--substreams-tier2-grpc-listen-addr={{ .Values.statefulset.substreamsTier2GrpcListenAddr }}"
+            - "--substreams-tier2-discovery-service-url={{ .Values.statefulset.substreamsTier2DiscoveryDerviceUrl }}"
+            {{- with .Values.statefulset.extraCommands }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
           {{- with .Values.statefulset.env }}
           env:
             {{- toYaml . | nindent 12 }}

@@ -5,18 +5,26 @@
 replicaCount: 1
 
 image:
-  repository: ""
+  repository: "quay.io/ultra.io/firehose-antelope"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: relayer
 
 deployment:
   enabled: true
-  serviceAccountName: app-data-reader
+  serviceAccountName: ""
+  # commands
+  commonOneBlockStoreUrl: ""
+  relayerMaxSourceLatency: 10m
+  relayerGrpcListenAddr: :9000
+  relayerSource1: dns:///reader-node-0.reader-node:9000
+  relayerSource2: dns:///reader-node-1.reader-node:9000
+  extraCommands: []
+  # ports
   ports:
     - name: publisher
       containerPort: 9000
@@ -24,18 +32,15 @@ deployment:
     - name: prometheus
       containerPort: 9102
       protocol: TCP
+  # env
   env:
     - name: INFO
       value: github.com/dfuse-io/.*
-  oneBlockStoreURL: ""
-  readerDNS1: dns:///reader-node-0.reader-node:9000
-  readerDNS2: dns:///reader-node-1.reader-node:9000
 
 ### Note: First port in list will be used as an Ingress port!
 service:
   labels:
     monitoring: "true"
-    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP
@@ -76,4 +81,4 @@ pdb:
   minAvailable: 1
 
 nodeSelector:
-  pool-id: std-n1-16cores-60gb
+  app: application

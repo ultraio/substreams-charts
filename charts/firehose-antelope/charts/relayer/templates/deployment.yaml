@@ -24,7 +24,7 @@ spec:
       serviceAccountName: "{{ .Values.deployment.serviceAccountName }}"
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/app/fireantelope"
@@ -33,11 +33,14 @@ spec:
             - "--config-file="
             - "--log-format=stackdriver"
             - "--log-to-file=false"
-            - "--common-one-block-store-url={{ .Values.deployment.oneBlockStoreURL }}"
-            - "--relayer-max-source-latency=10m"
-            - "--relayer-grpc-listen-addr=:9000"
-            - "--relayer-source={{ .Values.deployment.readerDNS1 }}"
-            - "--relayer-source={{ .Values.deployment.readerDNS2 }}"
+            - "--common-one-block-store-url={{ .Values.deployment.commonOneBlockStoreUrl }}"
+            - "--relayer-max-source-latency={{ .Values.deployment.relayerMaxSourceLatency }}"
+            - "--relayer-grpc-listen-addr={{ .Values.deployment.relayerGrpcListenAddr }}"
+            - "--relayer-source={{ .Values.deployment.relayerSource1 }}"
+            - "--relayer-source={{ .Values.deployment.relayerSource2 }}"
+            {{- with .Values.deployment.extraCommands }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
           {{- with .Values.deployment.env }}
           env:
             {{- toYaml . | nindent 12 }}
