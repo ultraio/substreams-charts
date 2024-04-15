@@ -4,4 +4,4 @@ include:
     ref: master
     inputs:
       chart: firehose-antelope
-      location: "" # Workaround because '.' is not evaluated correctly with rules:changes 
+      #location: "charts" # Workaround because '.' is not evaluated correctly with rules:changes 
