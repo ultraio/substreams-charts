@@ -53,3 +53,4 @@ pdb:
 
 nodeSelector:
   role: application
+  
