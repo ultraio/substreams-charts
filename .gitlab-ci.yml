@@ -1,7 +1,6 @@
 stages:
   - lint
   - test
-  # - release
 
 workflow:
   rules:
