@@ -1,0 +1,26 @@
+{{- if .Values.persistentVolumeEnabled -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 5Gi
+  hostPath:
+    path: /data/storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: storage
+  resources:
+    requests:
+      storage: 1Gi
+{{- end}}

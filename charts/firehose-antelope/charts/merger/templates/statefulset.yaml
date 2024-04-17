@@ -61,8 +61,17 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - mountPath: "/data"
-              name: datadir
+          {{- if .Values.statefulset.persistentVolumeClaimEnabled }}
+            {{- toYaml .Values.statefulset.dataVolumeMount | nindent 12 }}
+          {{- end }}
+          {{- if .Values.localVolume.enabled }}
+            {{- toYaml .Values.localVolume.volumeMounts | nindent 12 }}
+          {{- end }}
+      {{- if .Values.localVolume.enabled }}
+      volumes:
+        {{- toYaml .Values.localVolume.volume | nindent 8 }}
+      {{- end }}
+  {{- if .Values.statefulset.persistentVolumeClaimEnabled }}
   volumeClaimTemplates:
     - apiVersion: v1
       kind: PersistentVolumeClaim
@@ -80,4 +89,5 @@ spec:
         volumeMode: Filesystem
       status:
         phase: Pending
-{{ end }}
+  {{- end}}
+{{- end }}

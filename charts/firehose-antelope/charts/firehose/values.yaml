@@ -19,7 +19,7 @@ statefulset:
   serviceAccountName: ""
   # commands
   commonAuthPlugin: null://
-  commonLiveBlocksAddr: ns:///relayer:9000
+  commonLiveBlocksAddr: dns:///relayer:9000
   commonSystemShutdownSignalDelay: 30s
   commonMergedBlocksStoreUrl: ""
   commonOneBlockStoreUrl: ""
@@ -38,6 +38,17 @@ statefulset:
   env:
     - name: INFO
       value: github.com/dfuse-io/.*
+
+# For local test
+localVolume:
+  enabled: true
+  volumeMounts:
+    - mountPath: "/storage"
+      name: storage
+  volume:
+    - name: storage
+      persistentVolumeClaim:
+        claimName: storage-pvc
 
 ### Note: First port in list will be used as an Ingress port!
 service:

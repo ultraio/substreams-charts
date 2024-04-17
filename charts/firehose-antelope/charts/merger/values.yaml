@@ -40,6 +40,21 @@ statefulset:
       protocol: TCP
   storageLimit: 4Gi
   storageSize: 1Gi
+  persistentVolumeClaimEnabled: true
+  dataVolumeMount:
+    - mountPath: "/nodeos-data"
+      name: datadir
+
+# For local test
+localVolume:
+  enabled: true
+  volumeMounts:
+    - mountPath: "/storage"
+      name: storage
+  volume:
+    - name: storage
+      persistentVolumeClaim:
+        claimName: storage-pvc
 
 ### Note: First port in list will be used as an Ingress port!
 service:

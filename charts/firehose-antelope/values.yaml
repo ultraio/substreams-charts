@@ -8,3 +8,5 @@ serviceAccount:
   writerAnnotations: {}
   readerName: ""
   readerAnnotations: {}
+# Only enable if testing locally
+persistentVolumeEnabled: false
