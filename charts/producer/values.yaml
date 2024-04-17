@@ -16,7 +16,7 @@ fullnameOverride: producer
 
 statefulset:
   name: nodeos
-  # Others  
+  # Others
   ports:
     - containerPort: 8888
       name: nodeos-http
@@ -53,4 +53,3 @@ pdb:
 
 nodeSelector:
   role: application
-
