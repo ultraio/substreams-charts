@@ -37,7 +37,9 @@ spec:
             - "--relayer-max-source-latency={{ .Values.deployment.relayerMaxSourceLatency }}"
             - "--relayer-grpc-listen-addr={{ .Values.deployment.relayerGrpcListenAddr }}"
             - "--relayer-source={{ .Values.deployment.relayerSource1 }}"
+            {{- if .Values.deployment.relayerSource2 }}
             - "--relayer-source={{ .Values.deployment.relayerSource2 }}"
+            {{- end }}
             {{- with .Values.deployment.extraCommands }}
               {{- toYaml . | nindent 14 }}
             {{- end }}
@@ -59,6 +61,14 @@ spec:
           {{- end}}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.localVolume.enabled }}
+          volumeMounts:
+            {{- toYaml .Values.localVolume.volumeMounts | nindent 12 }}
+          {{- end }}
+      {{- if .Values.localVolume.enabled }}
+      volumes:
+        {{- toYaml .Values.localVolume.volume | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -75,4 +85,4 @@ spec:
                       values:
                         - {{ .Chart.Name }}
                 topologyKey: kubernetes.io/hostname
-{{ end }}
+{{- end }}

@@ -32,7 +32,7 @@ spec:
             - "--config-file="
             - "--log-format=stackdriver"
             - "--log-to-file=false"
-            - "--common-one-block-store-url={{ .Values.statefulset.commonOneBlockStoreURL }}"
+            - "--common-one-block-store-url={{ .Values.statefulset.commonOneBlockStoreUrl }}"
             - "--common-system-shutdown-signal-delay={{ .Values.statefulset.commonSystemShutdownSignalDelay }}"
             - "--reader-node-arguments={{ .Values.statefulset.readerNodeArguments }}"
             - "--reader-node-blocks-chan-capacity={{ .Values.statefulset.readerNodeBlocksChanCapacity }}"
@@ -71,6 +71,12 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if .Values.statefulset.persistentVolumeClaimEnabled }}
+            {{- toYaml .Values.statefulset.dataVolumeMount | nindent 12 }}
+          {{- end }}
+          {{- if .Values.localVolume.enabled }}
+            {{- toYaml .Values.localVolume.volumeMounts | nindent 12 }}
+          {{- end }}
       terminationGracePeriodSeconds: 60
       volumes:
         - configMap:
@@ -81,6 +87,10 @@ spec:
             defaultMode: 420
             name: {{ include "reader-node.fullname" . }}-protocol-features
           name: etc-nodeos-protocolfeatures
+      {{- if .Values.localVolume.enabled }}
+        {{- toYaml .Values.localVolume.volume | nindent 8 }}
+      {{- end }}
+  {{- if .Values.statefulset.persistentVolumeClaimEnabled }}
   volumeClaimTemplates:
     - apiVersion: v1
       kind: PersistentVolumeClaim
@@ -98,4 +108,5 @@ spec:
         volumeMode: Filesystem
       status:
         phase: Pending
-{{ end }}
+  {{- end }}
+{{- end }}

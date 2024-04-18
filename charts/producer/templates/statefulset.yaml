@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "producer.fullname" . }}
+  labels:
+    {{- include "producer.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/search: "true"
+spec:
+  restartPolicy: OnFailure
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "producer.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "producer.name" . }}
+  template: 
+    metadata:
+      labels:
+        {{- include "producer.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: "{{ .Values.statefulset.name }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["sh", "-c"]
+          args:
+          - |
+            echo "" | ultratest -n -s -D
+            while true; do sleep 30; done;
+          {{- with .Values.statefulset.ports }}
+          ports:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

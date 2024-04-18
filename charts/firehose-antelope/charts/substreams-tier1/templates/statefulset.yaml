@@ -68,4 +68,12 @@ spec:
           {{- end}}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-{{ end }}
+          {{- if .Values.localVolume.enabled }}
+          volumeMounts:
+            {{- toYaml .Values.localVolume.volumeMounts | nindent 12 }}
+          {{- end }}
+      {{- if .Values.localVolume.enabled }}
+      volumes:
+        {{- toYaml .Values.localVolume.volume | nindent 8 }}
+      {{- end }}
+{{- end }}
