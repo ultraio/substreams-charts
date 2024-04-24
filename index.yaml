@@ -3,6 +3,35 @@ entries:
   firehose-antelope:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2024-04-24T01:49:37.233790334Z"
+    dependencies:
+    - name: reader-node
+      repository: file://charts/reader-node
+      version: 0.1.0
+    - name: merger
+      repository: file://charts/merger
+      version: 0.1.0
+    - name: relayer
+      repository: file://charts/relayer
+      version: 0.1.0
+    - name: substreams-tier1
+      repository: file://charts/substreams-tier1
+      version: 0.1.0
+    - name: substreams-tier2
+      repository: file://charts/substreams-tier2
+      version: 0.1.0
+    - name: firehose
+      repository: file://charts/firehose
+      version: 0.1.0
+    description: A Helm chart for firehose-antelope components
+    digest: 5b8557e886aab35812abc65355f9381440a68cb0e2522c57783f27856e9c0702
+    name: firehose-antelope
+    type: application
+    urls:
+    - https://github.com/ultraio/substreams-charts/releases/download/firehose-antelope-1.0.4/firehose-antelope-1.0.4.tgz
+    version: 1.0.4
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2024-04-18T02:43:11.577374753Z"
     dependencies:
     - name: reader-node
@@ -157,4 +186,4 @@ entries:
     urls:
     - https://github.com/ultraio/substreams-charts/releases/download/producer-0.1.0/producer-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-18T02:43:11.693777954Z"
+generated: "2024-04-24T01:49:37.233818867Z"
