@@ -77,7 +77,7 @@ statefulset:
 
 # For local test
 localVolume:
-  enabled: true
+  enabled: false
   volumeMounts:
     - mountPath: "/storage"
       name: storage
