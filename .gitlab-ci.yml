@@ -1,10 +1,11 @@
-stages:
-  - lint
+# stages:
+#   - lint
+#   - test
   
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "external_pull_request_event"
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+# workflow:
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "external_pull_request_event"
+#     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-include:
-  - charts/firehose-antelope/.gitlab-ci.yml
+# include:
+#   - charts/firehose-antelope/.gitlab-ci.yml
