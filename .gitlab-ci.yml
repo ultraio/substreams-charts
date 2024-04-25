@@ -1,6 +1,5 @@
 stages:
   - lint
-  - test
   
 workflow:
   rules:
