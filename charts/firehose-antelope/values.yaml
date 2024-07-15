@@ -7,7 +7,6 @@ global:
 
   nodeos:
     apis: []
-    genesis_json: {}
 
   store:
     commonOneBlockStoreUrl: ""

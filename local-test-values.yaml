@@ -10,7 +10,7 @@ global:
   nodeos:
     apis:
       - producer-0.producer.default.svc.cluster.local:9876
-    genesis_json: |
+    genesis_json: |-
       {
         "initial_timestamp": "2018-09-01T12:00:00.000",
         "initial_key": "EOS7qBcTsKhCfUeGpn15JTtwrjEnZfXzeCDLnF1LtKr6xnMAr4b5k",
