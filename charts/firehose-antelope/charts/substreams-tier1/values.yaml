@@ -57,6 +57,7 @@ localVolume:
 service:
   labels:
     monitoring: "true"
+    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP
