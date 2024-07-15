@@ -23,7 +23,7 @@ spec:
       serviceAccountName: "{{ .Values.statefulset.serviceAccountName }}"
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.firehoseTag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/app/fireantelope"
@@ -36,10 +36,10 @@ spec:
             - "--common-live-blocks-addr={{ .Values.statefulset.commonLiveBlocksAddr }}"
             - "--common-system-shutdown-signal-delay={{ .Values.statefulset.commonSystemShutdownSignalDelay }}"
             - "--common-merged-blocks-store-url={{ .Values.statefulset.commonMergedBlocksStoreUrl }}"
-            - "--common-one-block-store-url={{ .Values.statefulset.commonOneBlockStoreUrl }}"
+            - "--common-one-block-store-url={{ .Values.global.store.commonOneBlockStoreUrl }}"
             - "--common-forked-blocks-store-url={{ .Values.statefulset.commonForkedBlocksStoreUrl }}"
             - "--substreams-state-bundle-size={{ .Values.statefulset.substreamsStateBundleSize }}"
-            - "--substreams-state-store-url={{ .Values.statefulset.substreamsStateStoreUrl }}"
+            - "--substreams-state-store-url={{ .Values.global.store.substreamsStateStoreUrl }}"
             - "--substreams-state-store-default-tag={{ .Values.statefulset.substreamsStateStoreDefaultTag }}"
             - "--substreams-tier1-grpc-listen-addr={{ .Values.statefulset.substreamsTier1GrpcListenAddr }}"
             - "--substreams-tier1-subrequests-endpoint={{ .Values.statefulset.substreamsTier1SubrequestsEndpoint }}"

@@ -18,7 +18,6 @@ deployment:
   enabled: true
   serviceAccountName: ""
   # commands
-  commonOneBlockStoreUrl: ""
   relayerMaxSourceLatency: 10m
   relayerGrpcListenAddr: :9000
   relayerSource1: dns:///reader-node-0.reader-node:9000

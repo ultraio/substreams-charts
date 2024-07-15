@@ -24,7 +24,7 @@ spec:
       serviceAccountName: "{{ .Values.deployment.serviceAccountName }}"
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.firehoseTag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/app/fireantelope"
@@ -33,7 +33,7 @@ spec:
             - "--config-file="
             - "--log-format=stackdriver"
             - "--log-to-file=false"
-            - "--common-one-block-store-url={{ .Values.deployment.commonOneBlockStoreUrl }}"
+            - "--common-one-block-store-url={{ .Values.global.store.commonOneBlockStoreUrl }}"
             - "--relayer-max-source-latency={{ .Values.deployment.relayerMaxSourceLatency }}"
             - "--relayer-grpc-listen-addr={{ .Values.deployment.relayerGrpcListenAddr }}"
             - "--relayer-source={{ .Values.deployment.relayerSource1 }}"
