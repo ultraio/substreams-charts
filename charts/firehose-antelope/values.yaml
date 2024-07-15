@@ -3,8 +3,9 @@ global:
     repository: quay.io/ultra.io/firehose-antelope
     pullPolicy: IfNotPresent
     firehoseTag: v1.4.1-1.0.2
-    nodeosTag: v1.4.1-1.0.2-nodeos3.2.5-2.0.4
+    nodeosTag: v1.4.1-1.0.2-nodeos5.0.2-3.0.0
   nodeos:
+    server_address: 0.0.0.0:9876
     apis: []
   store:
     commonOneBlockStoreUrl: ""
