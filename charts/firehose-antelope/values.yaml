@@ -4,17 +4,13 @@ global:
     pullPolicy: IfNotPresent
     firehoseTag: v1.4.1-1.0.2
     nodeosTag: v1.4.1-1.0.2-nodeos3.2.5-2.0.4
-
   nodeos:
     apis: []
-
   store:
     commonOneBlockStoreUrl: ""
     commonMergedBlocksStoreUrl: ""
     commonForkedBlocksStoreUrl: ""
     substreamsStateStoreUrl: "/firehose-data/localdata"
-    
-
 serviceMonitor:
   enabled: false
   name: ""
