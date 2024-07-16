@@ -3,4 +3,4 @@ appVersion: v1.3.2-1.0.2
 description: A Helm chart for substreams-tier1
 name: substreams-tier1
 type: application
-version: 0.1.0
+version: 0.1.1

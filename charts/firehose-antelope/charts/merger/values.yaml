@@ -18,9 +18,6 @@ statefulset:
   enabled: true
   serviceAccountName: ""
   # commands
-  commonMergedBlocksStoreUrl: ""
-  commonOneBlockStoreUrl: ""
-  commonForkedBlocksStoreUrl: ""
   mergerGrpcListenAddr: :9000
   mergerPruneForkedBlocksAfter: 2000
   mergerStopBlock: 0
@@ -60,6 +57,7 @@ localVolume:
 service:
   labels:
     monitoring: "true"
+    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP

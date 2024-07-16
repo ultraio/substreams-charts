@@ -19,11 +19,7 @@ statefulset:
   serviceAccountName: ""
   # commands
   commonSystemShutdownSignalDelay: 30s
-  commonMergedBlocksStoreUrl: ""
-  commonOneBlockStoreUrl: ""
-  commonForkedBlocksStoreUrl: ""
   substreamsStateBundleSize: 1000
-  substreamsStateStoreUrl: "/firehose-data/localdata"
   substreamsStateStoreDefaultTag: ""
   substreamsTier2GrpcListenAddr: :9000
   substreamsTier2DiscoveryDerviceUrl: ""
@@ -56,6 +52,7 @@ localVolume:
 service:
   labels:
     monitoring: "true"
+    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP

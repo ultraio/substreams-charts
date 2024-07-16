@@ -21,9 +21,6 @@ statefulset:
   commonAuthPlugin: null://
   commonLiveBlocksAddr: dns:///relayer:9000
   commonSystemShutdownSignalDelay: 30s
-  commonMergedBlocksStoreUrl: ""
-  commonOneBlockStoreUrl: ""
-  commonForkedBlocksStoreUrl: ""
   firehoseGrpcListenAddr: :9000
   extraCommands: []
   # ports
@@ -54,6 +51,7 @@ localVolume:
 service:
   labels:
     monitoring: "true"
+    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP

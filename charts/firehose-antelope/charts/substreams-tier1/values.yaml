@@ -21,11 +21,7 @@ statefulset:
   commonAuthPlugin: null://
   commonLiveBlocksAddr: dns:///relayer:9000
   commonSystemShutdownSignalDelay: 30s
-  commonMergedBlocksStoreUrl: ""
-  commonOneBlockStoreUrl: ""
-  commonForkedBlocksStoreUrl: ""
   substreamsStateBundleSize: 1000
-  substreamsStateStoreUrl: "/firehose-data/localdata"
   substreamsStateStoreDefaultTag: ""
   substreamsTier1GrpcListenAddr: :9000
   substreamsTier1SubrequestsEndpoint: dns:///substreams-tier2:9000
@@ -61,6 +57,7 @@ localVolume:
 service:
   labels:
     monitoring: "true"
+    monitor: prometheus
   type: ClusterIP
   ports:
     - protocol: TCP
