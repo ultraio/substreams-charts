@@ -8,7 +8,6 @@ global:
     firehoseTag: v1.4.1-1.0.2
     nodeosTag: v1.4.1-1.0.2-nodeos5.0.2-3.0.0
   nodeos:
-    server_address: 0.0.0.0:9877
     apis:
       - producer-0.producer.default.svc.cluster.local:9876
     genesis_json: |-

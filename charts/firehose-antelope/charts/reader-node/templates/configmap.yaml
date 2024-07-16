@@ -7,7 +7,7 @@ metadata:
 data:
   config.ini: |
     http-server-address = 0.0.0.0:8888
-    p2p-server-address = {{ .Values.global.nodeos.server_address }}
+    p2p-server-address = 0.0.0.0:9876
     p2p-max-nodes-per-host = 2
     connection-cleanup-period = 60
     verbose-http-errors = true
