@@ -21,5 +21,12 @@ serviceAccount:
   writerAnnotations: {}
   readerName: ""
   readerAnnotations: {}
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  tls: []
+  url:
+    substreams:
 # Only enable if testing locally
 persistentVolumeEnabled: false
