@@ -12,8 +12,6 @@ metadata:
   labels:
     {{- include "firehose-antelope.labels" . | nindent 4 }}
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: ingress-{{ .Release.Namespace }}
-    cert-manager.io/cluster-issuer: letsencrypt-prod-dns
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
