@@ -100,3 +100,6 @@ autoscaling:
 
 nodeSelector:
   role: application
+
+backendConfig:
+  enabled: false
