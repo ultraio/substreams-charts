@@ -90,6 +90,9 @@ spec:
       {{- if .Values.localVolume.enabled }}
         {{- toYaml .Values.localVolume.volume | nindent 8 }}
       {{- end }}
+      nodeSelector:
+        role: application
+        pool: {{ .Values.global.nodePool }}
   {{- if .Values.statefulset.persistentVolumeClaimEnabled }}
   volumeClaimTemplates:
     - apiVersion: v1
