@@ -71,6 +71,5 @@ spec:
         {{- toYaml .Values.localVolume.volume | nindent 8 }}
       {{- end }}
       nodeSelector:
-        role: application
         pool: {{ .Values.global.nodePool }}
 {{- end }}
