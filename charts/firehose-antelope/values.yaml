@@ -11,6 +11,7 @@ global:
     commonMergedBlocksStoreUrl: ""
     commonForkedBlocksStoreUrl: ""
     substreamsStateStoreUrl: "/firehose-data/localdata"
+  nodePool: e2-standard-8
 serviceMonitor:
   enabled: false
   name: ""
